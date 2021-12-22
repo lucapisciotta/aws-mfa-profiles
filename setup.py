@@ -1,13 +1,13 @@
-import pathlib
+from pathlib import Path
 from setuptools import setup
 
 # The directory containing this file
-HERE = pathlib.Path(__file__).parent
+HERE = Path(__file__).parent
 
 # The text of the README file
 README = (HERE / "README.md").read_text()
 
-# This call to setup() does all the work
+
 setup(
     name='aws-mfa-profiles',
     version='1.0.0',
@@ -22,8 +22,14 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.9',
+        'Development Status :: 5 - Production/Stable'
     ],
-    packages=["aws-mfa-profiles"],
+    packages=['aws_mfa_profiles'],
     include_package_data=True,
-    install_requires=['boto3']
+    install_requires=['boto3'],
+    entry_points={
+        'console_scripts': [
+            'aws-mfa-profiles=aws_mfa_profiles.__main__:main',
+            ],
+        }
 )

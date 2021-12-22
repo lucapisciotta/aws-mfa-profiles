@@ -7,9 +7,9 @@ import logging
 
 logging.basicConfig(format='{"timestamp":"%(asctime)s", "level":"%(levelname)s", "message":"%(message)s"}')
 parser = argparse.ArgumentParser(description='Set credential to connect on AWS using MFA')
-parser.add_argument('-p', metavar='profile', default='default', help='Profile from which get mfa configuration')
-parser.add_argument('-t', metavar='seconds', type=int, default=43200,
-                    help='Token expiration time in second from 900 (15 minutes) to 129600 (36 hours)')
+parser.add_argument('-p', metavar='profile', default='profile', help='Profile from which get mfa configuration (default: %(default)s)')
+parser.add_argument('-t', metavar='seconds', type=int, default=43200, choices=range(900, 129600),
+                    help='Token expiration time in second from 900 (15 minutes) to 129600 (36 hours) (default: %(default)s)')
 
 
 def check_token_validation(prompt: str):
@@ -61,7 +61,7 @@ def set_aws_variables(credentials):
         config.write(configfile)
 
 
-def handler():
+def main():
     args = parser.parse_args()
     aws_account_name = args.p
     aws_token_validity = args.t
@@ -72,4 +72,4 @@ def handler():
 
 
 if __name__ == '__main__':
-    handler()
+    main()
