@@ -50,13 +50,13 @@ def set_aws_variables(credentials):
     config = configparser.ConfigParser()
     config.read('{}/.aws/credentials'.format(os_environ['HOME']))
     try:
-        config.remove_section('default')
+        config.remove_section('temporary-credentials-with-mfa')
     except Exception as e:
         logging.info('No section to delete ', e)
-    config.add_section('default')
-    config['default']['aws_access_key_id'] = credentials['Credentials']['AccessKeyId']
-    config['default']['aws_secret_access_key'] = credentials['Credentials']['SecretAccessKey']
-    config['default']['aws_session_token'] = credentials['Credentials']['SessionToken']
+    config.add_section('temporary-credentials-with-mfa')
+    config['temporary-credentials-with-mfa']['aws_access_key_id'] = credentials['Credentials']['AccessKeyId']
+    config['temporary-credentials-with-mfa']['aws_secret_access_key'] = credentials['Credentials']['SecretAccessKey']
+    config['temporary-credentials-with-mfa']['aws_session_token'] = credentials['Credentials']['SessionToken']
     with open('{}/.aws/credentials'.format(os_environ['HOME']), 'w') as configfile:
         config.write(configfile)
 
