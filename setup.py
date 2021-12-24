@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name='aws-mfa-profiles',
-    version='1.1.0',
+    version='1.1.1',
     description='A package to create credential for AWS using MFA and with the support of multiple profiles',
     long_description=README,
     long_description_content_type='text/markdown',
