@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name='aws-mfa-profiles',
-    version='1.1.1',
+    version='2.0.0',
     description='A package to create credential for AWS using MFA and with the support of multiple profiles',
     long_description=README,
     long_description_content_type='text/markdown',
@@ -21,12 +21,12 @@ setup(
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'Development Status :: 5 - Production/Stable'
     ],
     packages=['aws_mfa_profiles'],
     include_package_data=True,
-    install_requires=['boto3'],
+    install_requires=['boto3', 'inquirer'],
     entry_points={
         'console_scripts': [
             'aws-mfa-profiles=aws_mfa_profiles.__main__:main',
