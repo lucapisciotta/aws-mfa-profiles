@@ -1,5 +1,8 @@
+from distutils.command.config import config
+from shutil import ExecError
 from boto3 import session as boto3_session
 from botocore.session import Session as botocore_session
+from inquirer import List as inquirer_list, prompt as inquirer_prompt
 from os import environ as os_environ
 import argparse
 import configparser
@@ -10,6 +13,7 @@ parser = argparse.ArgumentParser(description='Set credential to connect on AWS u
 parser.add_argument('-p', metavar='profile', default='profile', help='Profile from which get mfa configuration (default: %(default)s)')
 parser.add_argument('-t', metavar='seconds', type=int, default=43200, choices=range(900, 129600),
                     help='Token expiration time in second from 900 (15 minutes) to 129600 (36 hours) (default: %(default)s)')
+sections_list = []
 
 
 def check_token_validation(prompt: str):
@@ -46,6 +50,18 @@ def generate_client_session(aws_account_name: str):
     return client
 
 
+def read_profiles(section_list:list):
+    config = configparser.ConfigParser()
+    try:
+        config.read('{}/.aws/credentials'.format(os_environ['HOME']))
+        sections = config.sections()
+        for section in sections:
+            if 'mfa' not in section:
+                sections_list.append(section)
+    except Exception as e:
+        logging.error('{}/.aws/credentials not found'.format(os_environ['HOME']))
+    
+
 def set_aws_variables(credentials):
     config = configparser.ConfigParser()
     config.read('{}/.aws/credentials'.format(os_environ['HOME']))
@@ -61,7 +77,7 @@ def set_aws_variables(credentials):
         config.write(configfile)
 
 
-def main():
+def main_old():
     args = parser.parse_args()
     aws_account_name = args.p
     aws_token_validity = args.t
@@ -69,6 +85,15 @@ def main():
     check_token_validation(token)
     response = generate_credentials(aws_account_name, aws_token_validity, token)
     set_aws_variables(response)
+
+
+def main():
+    read_profiles(sections_list)
+    profiles_list = [inquirer_list('profile_name',
+                message='Choose the profile from which create temporary MFA credentials',
+                choices=sections_list)]
+    profile = inquirer_prompt(profiles_list)
+    print(profile['profile_name'])
 
 
 if __name__ == '__main__':
